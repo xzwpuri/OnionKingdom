@@ -198,8 +198,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BoggleButtonHandler
   _backgroundImage: {fileID: 7294499939719211051}
   _cellLetter: {fileID: 8550752691568062547}
-  normalColor: {r: 0.68235296, g: 0.7294118, b: 0.7372549, a: 0}
-  selectedColor: {r: 0.007902667, g: 0.9245283, b: 0, a: 0}
+  normalColor: {r: 0.68235296, g: 0.7294118, b: 0.7372549, a: 1}
+  selectedColor: {r: 0.007902667, g: 0.9245283, b: 0, a: 1}
 --- !u!1 &4825529509070375610
 GameObject:
   m_ObjectHideFlags: 0
