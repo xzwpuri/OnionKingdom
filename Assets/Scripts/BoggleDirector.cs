@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using TMPro;
+using UnityEngine.UI;
 
 public class BoggleDirector : MonoBehaviour
 {
@@ -18,11 +19,22 @@ public class BoggleDirector : MonoBehaviour
     [SerializeField] TextMeshProUGUI countText;
     [SerializeField] TextMeshProUGUI currentWordText;
 
+    [Header("Line")]
+    [SerializeField] BoggleLine linePrefab;
+    [SerializeField] RectTransform lineContainer;
+
+    [Header("Colors")]
+    [SerializeField] Color normalColor;
+    [SerializeField] Color selectColor;
+    [SerializeField] Color correctColor;
+    [SerializeField] Color wrongColor;
+
     char[,] data;
     string[] answerList;
 
     HashSet<string> acquiredWords = new HashSet<string>();
     List<WordEntryView> wordEntryViews = new List<WordEntryView>();
+    List<BoggleLine> activeLines = new List<BoggleLine>();
 
     string ans = "";
     List<BoggleCellView> path = new List<BoggleCellView>();
@@ -52,6 +64,8 @@ public class BoggleDirector : MonoBehaviour
 
         foreach (Transform child in wordListContent)
             Destroy(child.gameObject);
+
+        ClearLines();
 
         data = boardData;
         answerList = answers;
@@ -128,9 +142,15 @@ public class BoggleDirector : MonoBehaviour
         {
             for (int i = path.Count - 1; i > existingIndex; i--)
             {
-                path[i].UnSelected();
+                path[i].UnSelected(normalColor);
                 ans = ans.Substring(0, ans.Length - 1);
                 path.RemoveAt(i);
+
+                if (activeLines.Count > 0)
+                {
+                    Destroy(activeLines[activeLines.Count - 1].gameObject);
+                    activeLines.RemoveAt(activeLines.Count - 1);
+                }
             }
         }
         else
@@ -141,15 +161,53 @@ public class BoggleDirector : MonoBehaviour
                 int dx = Math.Abs(peek.Col - cell.Col);
                 int dy = Math.Abs(peek.Row - cell.Row);
                 if (dx > 1 || dy > 1) return;
+
+                DrawLine(peek, cell, selectColor);
             }
 
             path.Add(cell);
-            cell.SetSelected();
+            cell.SetSelected(selectColor);
             ans += data[cell.Col, cell.Row];
         }
 
-        // 현재 선택중인 글자 실시간 표시
         currentWordText.text = ans;
+    }
+
+    private void DrawLine(BoggleCellView from, BoggleCellView to, Color color)
+    {
+        BoggleLine line = Instantiate(linePrefab, lineContainer);
+
+        Camera cam = Camera.main;
+
+        Vector2 fromScreen = RectTransformUtility.WorldToScreenPoint(cam, from.GetComponent<RectTransform>().position);
+        Vector2 toScreen = RectTransformUtility.WorldToScreenPoint(cam, to.GetComponent<RectTransform>().position);
+
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            lineContainer, fromScreen, cam, out Vector2 fromLocal);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            lineContainer, toScreen, cam, out Vector2 toLocal);
+
+        line.SetLine(fromLocal, toLocal, color);
+        activeLines.Add(line);
+    }
+
+    private void ClearLines()
+    {
+        foreach (var line in activeLines)
+        {
+            if (line != null)
+                Destroy(line.gameObject);
+        }
+        activeLines.Clear();
+    }
+
+    private void UpdateLineColors(Color color)
+    {
+        foreach (var line in activeLines)
+        {
+            if (line != null)
+                line.GetComponent<Image>().color = color;
+        }
     }
 
     private void LeavePath()
@@ -160,6 +218,10 @@ public class BoggleDirector : MonoBehaviour
 
         if (answerList.Contains(upperAns) && !acquiredWords.Contains(upperAns))
         {
+            foreach (var cell in path)
+                cell.SetColor(correctColor);
+            UpdateLineColors(correctColor);
+
             acquiredWords.Add(upperAns);
             OnWordAcquired?.Invoke(upperAns);
             RefreshWordListUI();
@@ -170,10 +232,24 @@ public class BoggleDirector : MonoBehaviour
                 Debug.Log("All words acquired!");
             }
         }
+        else
+        {
+            foreach (var cell in path)
+                cell.SetColor(wrongColor);
+            UpdateLineColors(wrongColor);
+        }
+
+        StartCoroutine(ClearPathDelayed());
+    }
+
+    private System.Collections.IEnumerator ClearPathDelayed()
+    {
+        yield return new WaitForSeconds(0.3f);
 
         foreach (var cell in path)
-            cell.UnSelected();
+            cell.UnSelected(normalColor);
 
+        ClearLines();
         path.Clear();
         ans = "";
         currentWordText.text = "";
