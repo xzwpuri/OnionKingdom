@@ -30,7 +30,7 @@ public class BoggleDirector : MonoBehaviour
     [SerializeField] Color wrongColor;
 
     char[,] data;
-    string[] answerList;
+    WordData[] answerList;
 
     HashSet<string> acquiredWords = new HashSet<string>();
     List<WordEntryView> wordEntryViews = new List<WordEntryView>();
@@ -40,24 +40,10 @@ public class BoggleDirector : MonoBehaviour
     List<BoggleCellView> path = new List<BoggleCellView>();
     bool isDrag = false;
 
-    public Action<string> OnWordAcquired;
+    public Action<WordData> OnWordAcquired;
     public Action OnAllWordsAcquired;
 
-    private void Start()
-    {
-        char[,] testData =
-        {
-            {'Q', 'V', 'S', 'M'},
-            {'S', 'S', 'K', 'Z'},
-            {'E', 'R', 'T', 'O'},
-            {'B', 'U', 'N', 'A'}
-        };
-        string[] testAnswers = { "BURN", "RUN", "NURSE", "STUN" };
-
-        Init(testData, testAnswers);
-    }
-
-    public void Init(char[,] boardData, string[] answers)
+    public void Init(char[,] boardData, WordData[] answers)
     {
         foreach (Transform child in boggleGridRect)
             Destroy(child.gameObject);
@@ -75,6 +61,16 @@ public class BoggleDirector : MonoBehaviour
         ans = "";
         isDrag = false;
         currentWordText.text = "";
+
+        // DeckManager 기반으로 획득 여부 체크
+        if (DeckManager.Instance != null)
+        {
+            foreach (var word in answerList)
+            {
+                if (DeckManager.Instance.HasWord(word))
+                    acquiredWords.Add(word.word.ToUpper());
+            }
+        }
 
         SetBoard(data);
         SetWordListUI();
@@ -103,10 +99,11 @@ public class BoggleDirector : MonoBehaviour
 
     private void SetWordListUI()
     {
-        foreach (string word in answerList)
+        foreach (WordData word in answerList)
         {
+            bool isAcquired = acquiredWords.Contains(word.word.ToUpper());
             WordEntryView entry = Instantiate(wordEntryPrefab, wordListContent);
-            entry.SetWord(word, false);
+            entry.SetWord(word.word, isAcquired);
             wordEntryViews.Add(entry);
         }
         UpdateCountText();
@@ -121,8 +118,8 @@ public class BoggleDirector : MonoBehaviour
     {
         for (int i = 0; i < answerList.Length; i++)
         {
-            bool isAcquired = acquiredWords.Contains(answerList[i]);
-            wordEntryViews[i].SetWord(answerList[i], isAcquired);
+            bool isAcquired = acquiredWords.Contains(answerList[i].word.ToUpper());
+            wordEntryViews[i].SetWord(answerList[i].word, isAcquired);
         }
         UpdateCountText();
     }
@@ -216,14 +213,21 @@ public class BoggleDirector : MonoBehaviour
 
         string upperAns = ans.ToUpper();
 
-        if (answerList.Contains(upperAns) && !acquiredWords.Contains(upperAns))
+        WordData foundWord = answerList.FirstOrDefault(w => w.word.ToUpper() == upperAns);
+
+        if (foundWord != null && !acquiredWords.Contains(upperAns))
         {
             foreach (var cell in path)
                 cell.SetColor(correctColor);
             UpdateLineColors(correctColor);
 
             acquiredWords.Add(upperAns);
-            OnWordAcquired?.Invoke(upperAns);
+            OnWordAcquired?.Invoke(foundWord);
+
+            // DeckManager에 단어 추가
+            if (DeckManager.Instance != null)
+                DeckManager.Instance.AddWord(foundWord);
+
             RefreshWordListUI();
 
             if (acquiredWords.Count == answerList.Length)

@@ -10,10 +10,10 @@ public class DialogueData : ScriptableObject
 public class DialoguePage
 {
     public PageType pageType;
-    public string text;                  // 텍스트 페이지일 때
-    public int nextPageIndex;            // 텍스트 페이지 클릭 시 이동할 페이지 (-1이면 종료)
-    public DialogueChoice[] choices;     // 선택지 페이지일 때
-    public BoggleData boggleData;        // 보글 페이지일 때
+    public string text;
+    public int nextPageIndex;
+    public DialogueChoice[] choices;
+    public BoggleData boggleData;
 }
 
 public enum PageType
@@ -27,14 +27,14 @@ public enum PageType
 public class DialogueChoice
 {
     public string choiceText;
-    public int nextPageIndex;            // 이 선택지 고를 시 이동할 페이지 (-1이면 종료)
+    public int nextPageIndex;
 }
 
 [System.Serializable]
 public class BoggleData
 {
     public string[] boardRows;
-    public string[] answers;
+    public WordData[] answers;
 
     public char[,] GetBoard()
     {

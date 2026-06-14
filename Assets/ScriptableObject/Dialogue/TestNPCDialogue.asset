@@ -44,12 +44,12 @@ MonoBehaviour:
     choices: []
     boggleData:
       boardRows:
-      - QVSM
-      - SSKZ
-      - ERTO
-      - BUNA
-      answers:
       - BURN
-      - RUN
-      - NURSE
-      - STUN
+      - HITI
+      - CHAW
+      - EROR
+      answers:
+      - {fileID: 11400000, guid: a178fe9fdd00189408ba6085d7901a1e, type: 2}
+      - {fileID: 11400000, guid: b8354594f65fb9545912ee0584ce7858, type: 2}
+      - {fileID: 11400000, guid: 72eec269194fdf341b789ad34615c486, type: 2}
+      - {fileID: 11400000, guid: 44ae9fa2a09017f4d90683dc34063a53, type: 2}
