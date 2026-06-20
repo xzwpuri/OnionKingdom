@@ -24,14 +24,15 @@ public static class WeaponLibrary
         hitObj.Setup(sprite, damage, direction, player, offsetDistance);
     }
 
-    public static void Throw(MonoBehaviour caster, Transform player, WeaponData weapon, Vector2 targetPos)
+    public static void Throw(MonoBehaviour caster, Transform player, WeaponData weapon, Vector2 targetPos, ThrowProjectile throwPrefab)
     {
-        caster.StartCoroutine(ThrowRoutine(player, weapon, targetPos));
+        caster.StartCoroutine(ThrowRoutine(player, weapon, targetPos, throwPrefab));
     }
 
-    private static IEnumerator ThrowRoutine(Transform player, WeaponData weapon, Vector2 targetPos)
+    private static IEnumerator ThrowRoutine(Transform player, WeaponData weapon, Vector2 targetPos, ThrowProjectile throwPrefab)
     {
         Vector2 direction = (targetPos - (Vector2)player.position).normalized;
+        float speed = 8f;
 
         foreach (var entry in weapon.nounEntries)
         {
@@ -39,11 +40,10 @@ public static class WeaponLibrary
             foreach (var adj in entry.appliedAdjectives)
                 damage += adj.adjectiveDamageBonus;
 
-            Debug.Log($"[Throw] {entry.noun.word} 투척 | 방향: {direction} | 데미지: {damage}");
+            ThrowProjectile proj = Object.Instantiate(throwPrefab, player.position, Quaternion.identity);
+            proj.Setup(entry.noun.worldSprite, damage, direction, speed);
 
-            // TODO: 실제 투사체 오브젝트 생성 (포물선 이동)
-
-            yield return new WaitForSeconds(0.3f); // 연발 간격
+            yield return new WaitForSeconds(0.3f);
         }
     }
 }

@@ -3,6 +3,7 @@ using UnityEngine;
 public class WeaponManager : MonoBehaviour
 {
     [SerializeField] HitWeaponObject hitWeaponPrefab;
+    [SerializeField] ThrowProjectile throwProjectilePrefab;
     public static WeaponManager Instance { get; private set; }
 
     WeaponData currentWeapon;
@@ -58,7 +59,7 @@ public class WeaponManager : MonoBehaviour
                 WeaponLibrary.Hit(this, player, currentWeapon, targetPos, hitWeaponPrefab);
                 break;
             case VerbType.Throw:
-                WeaponLibrary.Throw(this, player, currentWeapon, targetPos);
+                WeaponLibrary.Throw(this, player, currentWeapon, targetPos, throwProjectilePrefab);
                 break;
         }
 

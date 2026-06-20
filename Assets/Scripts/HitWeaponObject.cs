@@ -3,14 +3,16 @@ using System.Collections;
 
 public class HitWeaponObject : MonoBehaviour
 {
-    [SerializeField] SpriteRenderer spriteRenderer;
+    [SerializeField] SpriteRenderer effectSpriteRenderer;
+    [SerializeField] Transform nounSpriteTransform; // 회전시킬 대상이라 Transform으로
+    [SerializeField] SpriteRenderer nounSpriteRenderer;
     [SerializeField] Collider2D hitCollider;
-    [SerializeField] Animator animator; // 휘두르는 애니메이션 재생용
-    [SerializeField] float activeDuration = 0.2f; // 히트박스 활성 시간
+    [SerializeField] Animator animator;
+    [SerializeField] float activeDuration = 0.2f;
 
     float damage;
 
-    public void Setup(Sprite sprite, float dmg, Vector2 direction, Transform player, float offsetDistance)
+    public void Setup(Sprite nounSprite, float dmg, Vector2 direction, Transform player, float offsetDistance)
     {
         damage = dmg;
 
@@ -19,8 +21,23 @@ public class HitWeaponObject : MonoBehaviour
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, 0, angle);
 
-        // 좌우 반전만 별도 판단 (스프라이트 자체를 위아래로 뒤집어서 좌우 대칭 효과)
-        spriteRenderer.flipY = Mathf.Abs(angle) > 90f;
+        bool flip = Mathf.Abs(angle) > 90f;
+        effectSpriteRenderer.flipY = flip;
+
+        if (nounSpriteRenderer != null)
+        {
+            if (nounSprite != null)
+            {
+                nounSpriteRenderer.sprite = nounSprite;
+                nounSpriteRenderer.flipY = flip;
+                nounSpriteRenderer.gameObject.SetActive(true);
+                StartCoroutine(SwingNounSprite(flip));
+            }
+            else
+            {
+                nounSpriteRenderer.gameObject.SetActive(false);
+            }
+        }
 
         if (animator != null)
             animator.Play("Swing", -1, 0f);
@@ -28,18 +45,32 @@ public class HitWeaponObject : MonoBehaviour
         StartCoroutine(ActiveRoutine());
     }
 
+    private IEnumerator SwingNounSprite(bool flip)
+    {
+        float t = 0f;
+        float startAngle = flip ? -30f : 30f;
+        float endAngle = flip ? 30f : -30f;
+
+        while (t < activeDuration)
+        {
+            t += Time.deltaTime;
+            float angle = Mathf.Lerp(startAngle, endAngle, t / activeDuration);
+            nounSpriteTransform.localRotation = Quaternion.Euler(0, 0, angle);
+            yield return null;
+        }
+    }
+
     private IEnumerator ActiveRoutine()
     {
         hitCollider.enabled = true;
         yield return new WaitForSeconds(activeDuration);
         hitCollider.enabled = false;
-        Destroy(gameObject, 0.1f); // 애니메이션 끝날 시간 살짝 더 줌
+        Destroy(gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player")) return;
-
         Debug.Log($"[Hit] 충돌: {other.gameObject.name} | 데미지: {damage}");
     }
 }
