@@ -78,8 +78,7 @@ public class HotbarController : MonoBehaviour
             WeaponData weapon = WeaponBuilder.TryBuild(orderedWords);
             if (weapon != null)
             {
-                Debug.Log($"무기 생성 성공: {weapon.verb} | 명사 {weapon.nounEntries.Count}개 | 사용 {weapon.usesRemaining}회");
-                // WeaponManager.Instance.EquipWeapon(weapon); // 나중에 연결
+                WeaponManager.Instance.EquipWeapon(weapon);
             }
             else
             {
