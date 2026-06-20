@@ -12,18 +12,42 @@ public enum VerbType
 {
     None,
     Throw,
-    Install,
+    Place,
     Eat,
     Hit,
     Shoot
 }
 
+public enum DebuffType
+{
+    None,
+    Burn,
+    Explosive,
+    Slow,
+    Stun
+}
+
 [CreateAssetMenu(fileName = "WordData", menuName = "Word/WordData")]
 public class WordData : ScriptableObject
 {
+    [Header("Common")]
     public string word;
     public WordType type;
-    public VerbType verbType;       // type이 Verb일 때만 사용
-    public bool canBeUsedAlone;     // 1단어 단독 조합 가능 여부 (현재 Hit만 true)
-    public Sprite icon;             // 추후 UI용
+
+    [Header("Verb (동사일 때)")]
+    public VerbType verbType;
+    public bool canBeUsedAlone;
+
+    [Header("Noun (명사일 때)")]
+    public Sprite worldSprite;
+    public float damageModifier;
+    public float sizeModifier;
+
+    [Header("Adjective (형용사일 때)")]
+    public GameObject particleEffectPrefab;
+    public Color outlineColor = Color.white;
+    public float adjectiveDamageBonus;
+    public DebuffType debuffType;
+    public float debuffValue;
+    public float debuffDuration;
 }

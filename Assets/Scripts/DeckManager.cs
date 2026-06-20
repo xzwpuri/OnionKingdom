@@ -48,24 +48,35 @@ public class DeckManager : MonoBehaviour
     {
         hotbar.Clear();
 
-        if (inventory.Count == 0)
+        // 인벤토리 + 쿨타임 합쳐서 전체 가용 단어 풀 확인
+        int totalAvailable = inventory.Count + cooldown.Count;
+
+        if (totalAvailable == 0)
         {
-            Debug.Log("인벤토리가 비어있음");
+            Debug.Log("사용 가능한 단어가 없음");
             return hotbar;
         }
 
-        // 동사 먼저 1개 보장
-        List<WordData> verbs = inventory.Where(w => w.type == WordType.Verb).ToList();
-        List<WordData> nonVerbs = inventory.Where(w => w.type != WordType.Verb).ToList();
-
-        if (verbs.Count > 0)
+        // 동사 먼저 1개 보장 (인벤토리 우선, 없으면 쿨타임에서)
+        List<WordData> verbsInInventory = inventory.Where(w => w.type == WordType.Verb).ToList();
+        if (verbsInInventory.Count > 0)
         {
-            WordData verb = verbs[Random.Range(0, verbs.Count)];
+            WordData verb = verbsInInventory[Random.Range(0, verbsInInventory.Count)];
             hotbar.Add(verb);
             inventory.Remove(verb);
         }
+        else
+        {
+            List<WordData> verbsInCooldown = cooldown.Where(w => w.type == WordType.Verb).ToList();
+            if (verbsInCooldown.Count > 0)
+            {
+                WordData verb = verbsInCooldown[Random.Range(0, verbsInCooldown.Count)];
+                hotbar.Add(verb);
+                cooldown.Remove(verb);
+            }
+        }
 
-        // 나머지 슬롯 채우기
+        // 나머지 슬롯 인벤토리에서 채우기
         int remaining = hotbarSize - hotbar.Count;
         List<WordData> pool = inventory.OrderBy(w => Random.value).Take(remaining).ToList();
         foreach (var w in pool)
@@ -74,7 +85,19 @@ public class DeckManager : MonoBehaviour
             inventory.Remove(w);
         }
 
-        Debug.Log($"핫바 오픈: {hotbar.Count}개");
+        // 여전히 부족하면 쿨타임에서 강제로 채우기
+        remaining = hotbarSize - hotbar.Count;
+        if (remaining > 0 && cooldown.Count > 0)
+        {
+            List<WordData> coolPool = cooldown.OrderBy(w => Random.value).Take(remaining).ToList();
+            foreach (var w in coolPool)
+            {
+                hotbar.Add(w);
+                cooldown.Remove(w);
+            }
+        }
+
+        Debug.Log($"핫바 오픈: {hotbar.Count}개 (인벤토리 {inventory.Count} / 쿨타임 {cooldown.Count})");
         return hotbar;
     }
 
@@ -122,4 +145,12 @@ public class DeckManager : MonoBehaviour
             _ => 1  // 5단어 이상
         };
     }
+
+#if UNITY_EDITOR
+    public void Debug_AddWord(WordData word)
+    {
+        inventory.Add(word);
+        Debug.Log($"[디버그] 단어 추가: {word.word}");
+    }
+#endif
 }

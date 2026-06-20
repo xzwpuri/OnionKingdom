@@ -59,7 +59,7 @@ public class HotbarController : MonoBehaviour
         if (!isOpen) return;
         isOpen = false;
         hotbarRoot.SetActive(false);
-        combineSlotObject.SetActive(false); // 추가
+        combineSlotObject.SetActive(false);
         Time.timeScale = 1f;
 
         foreach (Transform child in cardContainer)
@@ -68,15 +68,25 @@ public class HotbarController : MonoBehaviour
 
         DeckManager.Instance.CloseHotbar();
 
-        // 슬롯에 있는 단어들로 무기 생성
-        List<WordData> words = new List<WordData>();
+        // 슬롯 순서 그대로 단어 목록 가져오기
+        List<WordData> orderedWords = new List<WordData>();
         foreach (var card in combineSlot.SlottedCards)
-            words.Add(card.WordData);
+            orderedWords.Add(card.WordData);
 
-        if (words.Count > 0)
-            Debug.Log($"무기 생성: {string.Join(" + ", words.ConvertAll(w => w.word))}");
+        if (orderedWords.Count > 0)
+        {
+            WeaponData weapon = WeaponBuilder.TryBuild(orderedWords);
+            if (weapon != null)
+            {
+                Debug.Log($"무기 생성 성공: {weapon.verb} | 명사 {weapon.nounEntries.Count}개 | 사용 {weapon.usesRemaining}회");
+                // WeaponManager.Instance.EquipWeapon(weapon); // 나중에 연결
+            }
+            else
+            {
+                Debug.Log("무기 생성 실패: 문법 오류");
+            }
+        }
 
-        // 슬롯 초기화
         foreach (Transform child in combineSlot.transform)
             Destroy(child.gameObject);
         combineSlot.Clear();
