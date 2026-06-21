@@ -41,7 +41,7 @@ public class WordData : ScriptableObject
     [Header("Noun (명사일 때)")]
     public Sprite worldSprite;
     public float damageModifier;
-    public float sizeModifier;
+    public Vector2 sizeModifier = Vector2.one; // float → Vector2로 변경
 
     [Header("Adjective (형용사일 때)")]
     public GameObject particleEffectPrefab;

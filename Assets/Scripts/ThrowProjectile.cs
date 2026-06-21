@@ -10,13 +10,14 @@ public class ThrowProjectile : MonoBehaviour
     float gravity = 9.8f;
     float lifeTime = 3f;
 
-    public void Setup(Sprite sprite, float dmg, Vector2 direction, float speed)
+    public void Setup(Sprite sprite, float dmg, Vector2 direction, float speed, Vector2 sizeMultiplier)
     {
         if (sprite != null)
             spriteRenderer.sprite = sprite;
 
         damage = dmg;
         velocity = direction * speed;
+        transform.localScale = new Vector3(sizeMultiplier.x, sizeMultiplier.y, 1f);
 
         Destroy(gameObject, lifeTime);
     }

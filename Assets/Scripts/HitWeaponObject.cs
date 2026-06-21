@@ -12,7 +12,7 @@ public class HitWeaponObject : MonoBehaviour
 
     float damage;
 
-    public void Setup(Sprite nounSprite, float dmg, Vector2 direction, Transform player, float offsetDistance)
+    public void Setup(Sprite nounSprite, float dmg, Vector2 direction, Transform player, float offsetDistance, Vector2 sizeMultiplier)
     {
         damage = dmg;
 
@@ -31,6 +31,14 @@ public class HitWeaponObject : MonoBehaviour
                 nounSpriteRenderer.sprite = nounSprite;
                 nounSpriteRenderer.flipY = flip;
                 nounSpriteRenderer.gameObject.SetActive(true);
+
+                Vector3 baseScale = nounSpriteTransform.localScale; // 기본 비율 (X:3, Y:0.5)
+                nounSpriteTransform.localScale = new Vector3(
+                    baseScale.x * sizeMultiplier.x,
+                    baseScale.y * sizeMultiplier.y,
+                    1f
+                );
+
                 StartCoroutine(SwingNounSprite(flip));
             }
             else
