@@ -48,7 +48,7 @@ public class HotbarController : MonoBehaviour
         if (isOpen) return;
         isOpen = true;
         hotbarRoot.SetActive(true);
-        combineSlotObject.SetActive(true); // Ãß°¡
+        combineSlotObject.SetActive(true); // ì¶”ê°€
         Time.timeScale = slowTimeScale;
         List<WordData> hotbarWords = DeckManager.Instance.OpenHotbar();
         SpawnCards(hotbarWords);
@@ -68,7 +68,7 @@ public class HotbarController : MonoBehaviour
 
         DeckManager.Instance.CloseHotbar();
 
-        // ½½·Ô ¼ø¼­ ±×´ë·Î ´Ü¾î ¸ñ·Ï °¡Á®¿À±â
+        // ìŠ¬ë¡¯ ìˆœì„œ ê·¸ëŒ€ë¡œ ë‹¨ì–´ ëª©ë¡ ê°€ì ¸ì˜¤ê¸°
         List<WordData> orderedWords = new List<WordData>();
         foreach (var card in combineSlot.SlottedCards)
             orderedWords.Add(card.WordData);
@@ -82,7 +82,7 @@ public class HotbarController : MonoBehaviour
             }
             else
             {
-                Debug.Log("¹«±â »ı¼º ½ÇÆĞ: ¹®¹ı ¿À·ù");
+                Debug.Log("ë¬´ê¸° ìƒì„± ì‹¤íŒ¨: ë¬¸ë²• ì˜¤ë¥˜");
             }
         }
 
@@ -135,12 +135,12 @@ public class HotbarController : MonoBehaviour
         if (selectedWords.Contains(card.WordData))
         {
             selectedWords.Remove(card.WordData);
-            Debug.Log($"¼±ÅÃ ÇØÁ¦: {card.WordData.word}");
+            Debug.Log($"ì„ íƒ í•´ì œ: {card.WordData.word}");
         }
         else
         {
             selectedWords.Add(card.WordData);
-            Debug.Log($"¼±ÅÃ: {card.WordData.word} | ÇöÀç Á¶ÇÕ: {string.Join(" + ", selectedWords.ConvertAll(w => w.word))}");
+            Debug.Log($"ì„ íƒ: {card.WordData.word} | í˜„ì¬ ì¡°í•©: {string.Join(" + ", selectedWords.ConvertAll(w => w.word))}");
         }
     }
 
@@ -173,7 +173,7 @@ public class HotbarController : MonoBehaviour
             );
 
             RectTransform rect = remainingCards[i].GetComponent<RectTransform>();
-            rect.anchoredPosition = Vector2.zero; // ¸ÕÀú ÃÊ±âÈ­
+            rect.anchoredPosition = Vector2.zero; // ë¨¼ì € ì´ˆê¸°í™”
             rect.anchoredPosition = pos;
             rect.localRotation = Quaternion.Euler(0f, 0f, angle);
         }
@@ -181,7 +181,7 @@ public class HotbarController : MonoBehaviour
 
     public void AddCardToHotbar(WordData wordData)
     {
-        // ÇöÀç ÇÖ¹Ù Ä«µå ¸ñ·Ï °¡Á®¿À±â
+        // í˜„ì¬ í•«ë°” ì¹´ë“œ ëª©ë¡ ê°€ì ¸ì˜¤ê¸°
         List<WordData> currentWords = new List<WordData>();
         foreach (Transform child in cardContainer)
         {

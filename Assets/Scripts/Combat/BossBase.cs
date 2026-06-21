@@ -34,6 +34,6 @@ public class BossBase : MonoBehaviour
 
     protected virtual void HandleDeath()
     {
-        Debug.Log($"{gameObject.name} óġ��");
+        Debug.Log($"{gameObject.name} 처치됨");
     }
 }

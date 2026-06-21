@@ -4,7 +4,7 @@ public class WeaponManager : MonoBehaviour
 {
     [SerializeField] HitWeaponObject hitWeaponPrefab;
     [SerializeField] ThrowProjectile throwProjectilePrefab;
-    [SerializeField] EquippedWeaponDisplay weaponDisplay; // ¾À¿¡ ÀÖ´Â ¿ÀºêÁ§Æ® Á÷Á¢ ÂüÁ¶
+    [SerializeField] EquippedWeaponDisplay weaponDisplay; // ì”¬ì— ìˆëŠ” ì˜¤ë¸Œì íŠ¸ ì§ì ‘ ì°¸ì¡°
 
     public static WeaponManager Instance { get; private set; }
 
@@ -52,7 +52,7 @@ public class WeaponManager : MonoBehaviour
             weaponDisplay.UpdateUses(weapon.usesRemaining);
         }
 
-        Debug.Log($"¹«±â ÀåÂø: {weapon.verb} | »ç¿ë {weapon.usesRemaining}È¸");
+        Debug.Log($"ë¬´ê¸° ì¥ì°©: {weapon.verb} | ì‚¬ìš© {weapon.usesRemaining}íšŒ");
     }
 
     public void DestroyWeapon()
@@ -80,7 +80,7 @@ public class WeaponManager : MonoBehaviour
         Vector2 targetPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Transform player = GameObject.FindWithTag("Player").transform;
 
-        // »ç¿ëÇÏ´Â µ¿¾È µğ½ºÇÃ·¹ÀÌ ¼û±è
+        // ì‚¬ìš©í•˜ëŠ” ë™ì•ˆ ë””ìŠ¤í”Œë ˆì´ ìˆ¨ê¹€
         if (weaponDisplay != null)
             weaponDisplay.gameObject.SetActive(false);
 
@@ -96,10 +96,10 @@ public class WeaponManager : MonoBehaviour
 
         currentWeapon.usesRemaining--;
 
-        // »ç¿ë ¸ğ¼Ç ³¡³­ µÚ ´Ù½Ã º¸ÀÌ°Ô
-        StartCoroutine(ReshowDisplayAfterDelay(0.3f)); // »ç¿ë ¸ğ¼Ç ±æÀÌ¿¡ ¸Â°Ô Á¶Àı
+        // ì‚¬ìš© ëª¨ì…˜ ëë‚œ ë’¤ ë‹¤ì‹œ ë³´ì´ê²Œ
+        StartCoroutine(ReshowDisplayAfterDelay(0.3f)); // ì‚¬ìš© ëª¨ì…˜ ê¸¸ì´ì— ë§ê²Œ ì¡°ì ˆ
 
-        Debug.Log($"¹«±â »ç¿ë | ³²Àº È½¼ö: {currentWeapon.usesRemaining}");
+        Debug.Log($"ë¬´ê¸° ì‚¬ìš© | ë‚¨ì€ íšŸìˆ˜: {currentWeapon.usesRemaining}");
     }
 
     private System.Collections.IEnumerator ReshowDisplayAfterDelay(float delay)

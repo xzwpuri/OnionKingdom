@@ -10,7 +10,7 @@ public class HotbarDropZone : MonoBehaviour, IDropHandler
         WordCardView card = eventData.pointerDrag?.GetComponent<WordCardView>();
         if (card == null) return;
 
-        // 扁粮 墨靛 力芭窍绊 货肺 积己
+        // 旮办〈 旃措摐 鞝滉卑頃橁碃 靸堧 靸濎劚
         Destroy(card.gameObject);
         hotbarController.AddCardToHotbar(card.WordData);
     }

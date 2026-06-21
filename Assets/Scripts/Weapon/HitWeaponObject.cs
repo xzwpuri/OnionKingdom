@@ -6,8 +6,8 @@ public class HitWeaponObject : MonoBehaviour
     [SerializeField] SpriteRenderer effectSpriteRenderer;
     [SerializeField] Transform nounSpriteTransform;
     [SerializeField] SpriteRenderer nounSpriteRenderer;
-    [SerializeField] Collider2D hitCollider;       // ±âº» ÀÌÆåÆ®¿ë Äİ¶óÀÌ´õ
-    [SerializeField] Collider2D nounHitCollider;    // ¸í»ç ¿ÀºêÁ§Æ®¿ë Äİ¶óÀÌ´õ (»õ·Î Ãß°¡)
+    [SerializeField] Collider2D hitCollider;       // ê¸°ë³¸ ì´í™íŠ¸ìš© ì½œë¼ì´ë”
+    [SerializeField] Collider2D nounHitCollider;    // ëª…ì‚¬ ì˜¤ë¸Œì íŠ¸ìš© ì½œë¼ì´ë” (ìƒˆë¡œ ì¶”ê°€)
     [SerializeField] Animator animator;
     [SerializeField] float activeDuration = 0.2f;
 
@@ -91,18 +91,18 @@ public class HitWeaponObject : MonoBehaviour
 
     public void HandleTrigger(Collider2D other)
     {
-        Debug.Log($"[Hit] Ãæµ¹ ´ë»ó: {other.gameObject.name}");
+        Debug.Log($"[Hit] ì¶©ëŒ ëŒ€ìƒ: {other.gameObject.name}");
         if (other.CompareTag("Player")) return;
 
         Health targetHealth = other.GetComponent<Health>();
         if (targetHealth != null)
         {
-            Debug.Log($"[Hit] Health Ã£À½, µ¥¹ÌÁö Àû¿ë: {damage}");
+            Debug.Log($"[Hit] Health ì°¾ìŒ, ë°ë¯¸ì§€ ì ìš©: {damage}");
             targetHealth.TakeDamage(Mathf.RoundToInt(damage));
         }
         else
         {
-            Debug.Log("[Hit] Health ÄÄÆ÷³ÍÆ® ¾øÀ½");
+            Debug.Log("[Hit] Health ì»´í¬ë„ŒíŠ¸ ì—†ìŒ");
         }
     }
 }

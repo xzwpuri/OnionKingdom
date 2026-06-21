@@ -34,16 +34,16 @@ public class WordData : ScriptableObject
     public string word;
     public WordType type;
 
-    [Header("Verb (µ¿»çÀÏ ¶§)")]
+    [Header("Verb (ë™ì‚¬ì¼ ë•Œ)")]
     public VerbType verbType;
     public bool canBeUsedAlone;
 
-    [Header("Noun (¸í»çÀÏ ¶§)")]
+    [Header("Noun (ëª…ì‚¬ì¼ ë•Œ)")]
     public Sprite worldSprite;
     public float damageModifier;
-    public Vector2 sizeModifier = Vector2.one; // float ¡æ Vector2·Î º¯°æ
+    public Vector2 sizeModifier = Vector2.one; // float â†’ Vector2ë¡œ ë³€ê²½
 
-    [Header("Adjective (Çü¿ë»çÀÏ ¶§)")]
+    [Header("Adjective (í˜•ìš©ì‚¬ì¼ ë•Œ)")]
     public GameObject particleEffectPrefab;
     public Color outlineColor = Color.white;
     public float adjectiveDamageBonus;

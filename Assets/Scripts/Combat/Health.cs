@@ -29,7 +29,7 @@ public class Health : MonoBehaviour
 
         OnHPChanged?.Invoke(currentHP, maxHP);
         OnDamageTaken?.Invoke(amount, hitDirection);
-        Debug.Log($"{gameObject.name} µ•πÃ¡ˆ {amount} | HP: {currentHP}/{maxHP}");
+        Debug.Log($"{gameObject.name} Îç∞ÎØ∏ÏßÄ {amount} | HP: {currentHP}/{maxHP}");
 
         if (currentHP <= 0)
             Die();
@@ -48,7 +48,7 @@ public class Health : MonoBehaviour
 
     private void Die()
     {
-        Debug.Log($"{gameObject.name} ªÁ∏¡");
+        Debug.Log($"{gameObject.name} ÏÇ¨Îßù");
         OnDeath?.Invoke();
     }
 }

@@ -17,7 +17,7 @@ public class CombineSlotDropZone : MonoBehaviour, IDropHandler
         if (slottedCards.Contains(card)) return;
 
         AddCard(card);
-        Debug.Log($"½½·Ô¿¡ Ãß°¡: {card.WordData.word}");
+        Debug.Log($"ìŠ¬ë¡¯ì— ì¶”ê°€: {card.WordData.word}");
     }
 
     public void AddCard(WordCardView card)
@@ -35,7 +35,7 @@ public class CombineSlotDropZone : MonoBehaviour, IDropHandler
         {
             slottedCards.Remove(card);
             hotbarController.RearrangeCards();
-            Debug.Log($"½½·Ô¿¡¼­ Á¦°Å: {card.WordData.word}");
+            Debug.Log($"ìŠ¬ë¡¯ì—ì„œ ì œê±°: {card.WordData.word}");
         }
     }
 
