@@ -41,6 +41,7 @@ public class BossCarrot : BossBase
     float patternTimer = 0f;
     bool isUsingPattern = false;
     bool isGrounded = true;
+    bool isDead = false;
 
     protected override void Awake()
     {
@@ -53,6 +54,7 @@ public class BossCarrot : BossBase
 
     private void Update()
     {
+        if (isDead) return;
         if (isUsingPattern) return;
 
         patternTimer += Time.deltaTime;
@@ -68,6 +70,18 @@ public class BossCarrot : BossBase
 
             StartCoroutine(MoveJump());
         }
+    }
+
+    protected override void HandleDeath()
+    {
+        base.HandleDeath();
+        isDead = true;
+        StopAllCoroutines();
+        rb.linearVelocity = Vector2.zero;
+        rb.gravityScale = 0f;
+
+        if (bossCollider != null)
+            bossCollider.enabled = false;
     }
 
     private IEnumerator MoveJump()

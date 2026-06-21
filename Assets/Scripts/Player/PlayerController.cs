@@ -17,8 +17,8 @@ public class PlayerController : MonoBehaviour
     Rigidbody2D rb;
     int jumpCount;
     bool isGrounded;
-
-    bool isKnockedBack = false; // 넉백 후 착지 전까지 조작 불가
+    bool isKnockedBack = false;
+    Vector2 externalForce = Vector2.zero;
 
     void Awake()
     {
@@ -43,19 +43,20 @@ public class PlayerController : MonoBehaviour
         {
             jumpCount = 0;
             if (isKnockedBack)
-                isKnockedBack = false; // 착지하면 조작 가능
+                isKnockedBack = false;
         }
     }
     void Move()
     {
         float input = Input.GetAxisRaw("Horizontal");
-        rb.linearVelocity = new Vector2(input * moveSpeed, rb.linearVelocity.y);
+        float finalX = input * moveSpeed + externalForce.x;
+        rb.linearVelocity = new Vector2(finalX, rb.linearVelocity.y);
         if (input > 0) transform.localScale = new Vector3(1, 1, 1);
         else if (input < 0) transform.localScale = new Vector3(-1, 1, 1);
     }
     void Jump()
     {
-        if (isKnockedBack) return; // 넉백 중 점프도 불가
+        if (isKnockedBack) return;
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -84,6 +85,16 @@ public class PlayerController : MonoBehaviour
         isKnockedBack = true;
         rb.linearVelocity = Vector2.zero;
         rb.AddForce(force, ForceMode2D.Impulse);
+    }
+
+    public void ApplyExternalForce(Vector2 force)
+    {
+        externalForce = force;
+    }
+
+    public void ClearExternalForce()
+    {
+        externalForce = Vector2.zero;
     }
 
     void OnDrawGizmosSelected()
