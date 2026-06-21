@@ -18,7 +18,7 @@ MonoBehaviour:
   canBeUsedAlone: 0
   worldSprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   damageModifier: 0
-  sizeModifier: 0
+  sizeModifier: {x: 1, y: 1}
   particleEffectPrefab: {fileID: 0}
   outlineColor: {r: 1, g: 1, b: 1, a: 1}
   adjectiveDamageBonus: 0
