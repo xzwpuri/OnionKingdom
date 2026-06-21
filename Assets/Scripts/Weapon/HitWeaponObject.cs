@@ -4,9 +4,10 @@ using System.Collections;
 public class HitWeaponObject : MonoBehaviour
 {
     [SerializeField] SpriteRenderer effectSpriteRenderer;
-    [SerializeField] Transform nounSpriteTransform; // 회전시킬 대상이라 Transform으로
+    [SerializeField] Transform nounSpriteTransform;
     [SerializeField] SpriteRenderer nounSpriteRenderer;
-    [SerializeField] Collider2D hitCollider;
+    [SerializeField] Collider2D hitCollider;       // 기본 이펙트용 콜라이더
+    [SerializeField] Collider2D nounHitCollider;    // 명사 오브젝트용 콜라이더 (새로 추가)
     [SerializeField] Animator animator;
     [SerializeField] float activeDuration = 0.2f;
 
@@ -32,10 +33,10 @@ public class HitWeaponObject : MonoBehaviour
                 nounSpriteRenderer.flipY = flip;
                 nounSpriteRenderer.gameObject.SetActive(true);
 
-                Vector3 baseScale = nounSpriteTransform.localScale; // 기본 비율 (X:3, Y:0.5)
+                Vector3 baseScale = nounSpriteTransform.localScale;
                 nounSpriteTransform.localScale = new Vector3(
-                    baseScale.x * sizeMultiplier.x,
-                    baseScale.y * sizeMultiplier.y,
+                    Mathf.Abs(baseScale.x) * sizeMultiplier.x,
+                    Mathf.Abs(baseScale.y) * sizeMultiplier.y,
                     1f
                 );
 
@@ -71,20 +72,29 @@ public class HitWeaponObject : MonoBehaviour
     private IEnumerator ActiveRoutine()
     {
         hitCollider.enabled = true;
+        if (nounHitCollider != null && nounSpriteRenderer != null && nounSpriteRenderer.gameObject.activeSelf)
+            nounHitCollider.enabled = true;
+
         yield return new WaitForSeconds(activeDuration);
+
         hitCollider.enabled = false;
+        if (nounHitCollider != null)
+            nounHitCollider.enabled = false;
+
         Destroy(gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log($"[Hit] OnTriggerEnter2D 호출됨: {other.gameObject.name}");
+        HandleTrigger(other);
+    }
+
+    public void HandleTrigger(Collider2D other)
+    {
         if (other.CompareTag("Player")) return;
 
         Health targetHealth = other.GetComponent<Health>();
         if (targetHealth != null)
             targetHealth.TakeDamage(Mathf.RoundToInt(damage));
-        else
-            Debug.Log("Health 컴포넌트를 찾을 수 없음");
     }
 }
