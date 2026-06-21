@@ -42,7 +42,10 @@ public class ThrowProjectile : MonoBehaviour
             return;
         }
 
-        Debug.Log($"[Throw] 충돌: {other.gameObject.name} | 데미지: {damage}");
+        Health targetHealth = other.GetComponent<Health>();
+        if (targetHealth != null)
+            targetHealth.TakeDamage(Mathf.RoundToInt(damage));
+
         Destroy(gameObject);
     }
 }

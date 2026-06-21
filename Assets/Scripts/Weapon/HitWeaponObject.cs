@@ -79,6 +79,9 @@ public class HitWeaponObject : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player")) return;
-        Debug.Log($"[Hit] 충돌: {other.gameObject.name} | 데미지: {damage}");
+
+        Health targetHealth = other.GetComponent<Health>();
+        if (targetHealth != null)
+            targetHealth.TakeDamage(Mathf.RoundToInt(damage));
     }
 }

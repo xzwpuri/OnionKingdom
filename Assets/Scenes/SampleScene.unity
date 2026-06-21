@@ -1793,6 +1793,8 @@ GameObject:
   - component: {fileID: 1905487440}
   - component: {fileID: 1905487439}
   - component: {fileID: 1905487443}
+  - component: {fileID: 1905487445}
+  - component: {fileID: 1905487444}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1970,6 +1972,34 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &1905487444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1905487438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba222a38f09da9743b5a68b91b43a1e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+  health: {fileID: 1905487445}
+  spriteRenderer: {fileID: 1905487441}
+  hpStageSprites: []
+--- !u!114 &1905487445
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1905487438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b08a09c8941eae438c4b94010739e13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Health
+  maxHP: 5
 --- !u!1001 &2778297301937719488
 PrefabInstance:
   m_ObjectHideFlags: 0
