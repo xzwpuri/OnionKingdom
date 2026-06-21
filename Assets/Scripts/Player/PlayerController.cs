@@ -13,9 +13,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform groundCheck;
     [SerializeField] float groundCheckRadius = 0.1f;
     [SerializeField] LayerMask groundLayer;
+
     Rigidbody2D rb;
     int jumpCount;
     bool isGrounded;
+
+    bool isKnockedBack = false; // 넉백 후 착지 전까지 조작 불가
+
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -23,7 +27,10 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         CheckGround();
-        Move();
+
+        if (!isKnockedBack)
+            Move();
+
         Jump();
         UpdateGravity();
     }
@@ -33,7 +40,11 @@ public class PlayerController : MonoBehaviour
         Collider2D hit = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
         isGrounded = hit != null;
         if (!wasGrounded && isGrounded)
+        {
             jumpCount = 0;
+            if (isKnockedBack)
+                isKnockedBack = false; // 착지하면 조작 가능
+        }
     }
     void Move()
     {
@@ -44,6 +55,8 @@ public class PlayerController : MonoBehaviour
     }
     void Jump()
     {
+        if (isKnockedBack) return; // 넉백 중 점프도 불가
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (isGrounded)
@@ -65,6 +78,14 @@ public class PlayerController : MonoBehaviour
         else
             rb.gravityScale = riseGravityScale;
     }
+
+    public void ApplyKnockback(Vector2 force, float duration)
+    {
+        isKnockedBack = true;
+        rb.linearVelocity = Vector2.zero;
+        rb.AddForce(force, ForceMode2D.Impulse);
+    }
+
     void OnDrawGizmosSelected()
     {
         if (groundCheck != null)
