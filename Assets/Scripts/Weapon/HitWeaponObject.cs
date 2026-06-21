@@ -78,10 +78,13 @@ public class HitWeaponObject : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        Debug.Log($"[Hit] OnTriggerEnter2D 호출됨: {other.gameObject.name}");
         if (other.CompareTag("Player")) return;
 
         Health targetHealth = other.GetComponent<Health>();
         if (targetHealth != null)
             targetHealth.TakeDamage(Mathf.RoundToInt(damage));
+        else
+            Debug.Log("Health 컴포넌트를 찾을 수 없음");
     }
 }
