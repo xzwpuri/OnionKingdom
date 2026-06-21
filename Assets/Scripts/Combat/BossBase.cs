@@ -5,7 +5,7 @@ public class BossBase : MonoBehaviour
     [SerializeField] protected Health health;
     [SerializeField] protected int contactDamage = 1;
     [SerializeField] protected Collider2D bossCollider;
-    [SerializeField] protected float contactCooldown = 0.5f; // 연속 충돌 데미지 방지
+    [SerializeField] protected float contactCooldown = 0.5f;
 
     protected Transform player;
     float lastContactTime = -999f;
@@ -17,17 +17,17 @@ public class BossBase : MonoBehaviour
             health.OnDeath += HandleDeath;
     }
 
-    protected virtual void OnCollisionStay2D(Collision2D collision)
+    protected virtual void OnTriggerStay2D(Collider2D other)
     {
-        if (!collision.gameObject.CompareTag("Player")) return;
+        if (!other.CompareTag("Player")) return;
         if (Time.time - lastContactTime < contactCooldown) return;
 
         lastContactTime = Time.time;
 
-        Health playerHealth = collision.gameObject.GetComponent<Health>();
+        Health playerHealth = other.GetComponent<Health>();
         if (playerHealth != null)
         {
-            Vector2 hitDir = (collision.transform.position - transform.position).normalized;
+            Vector2 hitDir = (other.transform.position - transform.position).normalized;
             playerHealth.TakeDamage(contactDamage, hitDir);
         }
     }
