@@ -46,10 +46,12 @@ public class FallingLeaf : MonoBehaviour
             Health health = other.GetComponent<Health>();
             if (health != null)
             {
+                if (health.IsInvincible) return;
+
                 Vector2 dir = ((Vector2)other.transform.position - (Vector2)transform.position).normalized;
                 health.TakeDamage(damage, dir);
+                Destroy(gameObject);
             }
-            Destroy(gameObject);
             return;
         }
 

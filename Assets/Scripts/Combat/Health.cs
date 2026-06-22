@@ -9,6 +9,7 @@ public class Health : MonoBehaviour
 
     public int CurrentHP => currentHP;
     public int MaxHP => maxHP;
+    public bool IsInvincible => isInvincible;
 
     public Action<int, int> OnHPChanged;
     public Action OnDeath;
