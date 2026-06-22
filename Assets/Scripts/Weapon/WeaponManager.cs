@@ -1,22 +1,27 @@
 using UnityEngine;
+using System.Collections;
 
 public class WeaponManager : MonoBehaviour
 {
     [SerializeField] HitWeaponObject hitWeaponPrefab;
     [SerializeField] ThrowProjectile throwProjectilePrefab;
-    [SerializeField] EquippedWeaponDisplay weaponDisplay; // 씬에 있는 오브젝트 직접 참조
+    [SerializeField] EquippedWeaponDisplay weaponDisplay;
 
     public static WeaponManager Instance { get; private set; }
 
     WeaponData currentWeapon;
     Coroutine activeRoutine;
+    Transform player;
 
     public WeaponData CurrentWeapon => currentWeapon;
 
     private void Awake()
     {
         if (Instance == null)
+        {
             Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
         else
             Destroy(gameObject);
     }
@@ -25,10 +30,25 @@ public class WeaponManager : MonoBehaviour
     {
         if (weaponDisplay != null)
             weaponDisplay.gameObject.SetActive(false);
+
+        CachePlayer();
+    }
+
+    private void CachePlayer()
+    {
+        GameObject playerObj = GameObject.FindWithTag("Player");
+        if (playerObj != null)
+            player = playerObj.transform;
     }
 
     private void Update()
     {
+        if (player == null)
+        {
+            CachePlayer(); // 씬 전환 등으로 플레이어가 늦게 생성될 경우 대비
+            if (player == null) return;
+        }
+
         if (currentWeapon == null) return;
         if (currentWeapon.usesRemaining <= 0)
         {
@@ -76,11 +96,10 @@ public class WeaponManager : MonoBehaviour
     private void UseWeapon()
     {
         if (currentWeapon == null || currentWeapon.usesRemaining <= 0) return;
+        if (player == null) return;
 
         Vector2 targetPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Transform player = GameObject.FindWithTag("Player").transform;
 
-        // 사용하는 동안 디스플레이 숨김
         if (weaponDisplay != null)
             weaponDisplay.gameObject.SetActive(false);
 
@@ -96,13 +115,12 @@ public class WeaponManager : MonoBehaviour
 
         currentWeapon.usesRemaining--;
 
-        // 사용 모션 끝난 뒤 다시 보이게
-        StartCoroutine(ReshowDisplayAfterDelay(0.3f)); // 사용 모션 길이에 맞게 조절
+        StartCoroutine(ReshowDisplayAfterDelay(0.3f));
 
         Debug.Log($"무기 사용 | 남은 횟수: {currentWeapon.usesRemaining}");
     }
 
-    private System.Collections.IEnumerator ReshowDisplayAfterDelay(float delay)
+    private IEnumerator ReshowDisplayAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
 

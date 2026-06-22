@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System;
 
 public class WordCardView : MonoBehaviour
 {
@@ -14,7 +13,6 @@ public class WordCardView : MonoBehaviour
     [SerializeField] Color defaultTextColor;
 
     WordData wordData;
-    public Action<WordCardView> OnCardClicked;
 
     public WordData WordData => wordData;
 
@@ -36,8 +34,5 @@ public class WordCardView : MonoBehaviour
             wordText.color = defaultTextColor;
             typeText.color = defaultTextColor;
         }
-
-        GetComponent<Button>().onClick.RemoveAllListeners();
-        GetComponent<Button>().onClick.AddListener(() => OnCardClicked?.Invoke(this));
     }
 }

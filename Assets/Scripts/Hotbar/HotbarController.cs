@@ -20,7 +20,6 @@ public class HotbarController : MonoBehaviour
     [SerializeField] float slowTimeScale = 0.3f;
 
     List<WordCardView> activeCards = new List<WordCardView>();
-    List<WordData> selectedWords = new List<WordData>();
     bool isOpen = false;
     bool tabWasDown = false;
 
@@ -48,7 +47,7 @@ public class HotbarController : MonoBehaviour
         if (isOpen) return;
         isOpen = true;
         hotbarRoot.SetActive(true);
-        combineSlotObject.SetActive(true); // 추가
+        combineSlotObject.SetActive(true);
         Time.timeScale = slowTimeScale;
         List<WordData> hotbarWords = DeckManager.Instance.OpenHotbar();
         SpawnCards(hotbarWords);
@@ -68,7 +67,6 @@ public class HotbarController : MonoBehaviour
 
         DeckManager.Instance.CloseHotbar();
 
-        // 슬롯 순서 그대로 단어 목록 가져오기
         List<WordData> orderedWords = new List<WordData>();
         foreach (var card in combineSlot.SlottedCards)
             orderedWords.Add(card.WordData);
@@ -94,7 +92,6 @@ public class HotbarController : MonoBehaviour
     private void Reroll()
     {
         List<WordData> newWords = DeckManager.Instance.RerollHotbar();
-        selectedWords.Clear();
         SpawnCards(newWords);
     }
 
@@ -125,22 +122,7 @@ public class HotbarController : MonoBehaviour
             rect.anchoredPosition = pos;
             rect.localRotation = Quaternion.Euler(0f, 0f, angle);
             card.Setup(words[i]);
-            card.OnCardClicked += OnCardSelected;
             activeCards.Add(card);
-        }
-    }
-
-    private void OnCardSelected(WordCardView card)
-    {
-        if (selectedWords.Contains(card.WordData))
-        {
-            selectedWords.Remove(card.WordData);
-            Debug.Log($"선택 해제: {card.WordData.word}");
-        }
-        else
-        {
-            selectedWords.Add(card.WordData);
-            Debug.Log($"선택: {card.WordData.word} | 현재 조합: {string.Join(" + ", selectedWords.ConvertAll(w => w.word))}");
         }
     }
 
@@ -173,7 +155,7 @@ public class HotbarController : MonoBehaviour
             );
 
             RectTransform rect = remainingCards[i].GetComponent<RectTransform>();
-            rect.anchoredPosition = Vector2.zero; // 먼저 초기화
+            rect.anchoredPosition = Vector2.zero;
             rect.anchoredPosition = pos;
             rect.localRotation = Quaternion.Euler(0f, 0f, angle);
         }
@@ -181,7 +163,6 @@ public class HotbarController : MonoBehaviour
 
     public void AddCardToHotbar(WordData wordData)
     {
-        // 현재 핫바 카드 목록 가져오기
         List<WordData> currentWords = new List<WordData>();
         foreach (Transform child in cardContainer)
         {

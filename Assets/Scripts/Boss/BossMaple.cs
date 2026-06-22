@@ -25,7 +25,7 @@ public class BossMaple : BossBase
     [SerializeField] float windForce = 3f;
     [SerializeField] float windDuration = 3f;
 
-    [Header("Root Surge Pattern (땅파기 유사)")]
+    [Header("Root Surge Pattern")]
     [SerializeField] LayerMask groundLayer;
     [SerializeField] int surgeDamage = 2;
     [SerializeField] float surgeTrackDuration = 0.5f;
@@ -35,9 +35,6 @@ public class BossMaple : BossBase
     [SerializeField] GameObject surgeRootPrefab;
     [SerializeField] float surgeLifeTime = 0.3f;
 
-    [Header("Pattern Timing")]
-    [SerializeField] float patternInterval = 3f;
-
     [Header("Danger Zone")]
     [SerializeField] DangerZoneIndicator dangerZonePrefab;
 
@@ -46,11 +43,8 @@ public class BossMaple : BossBase
 
     SpriteRenderer spriteRenderer;
     float leafTimer = 0f;
-    float patternTimer = 0f;
-    bool isUsingPattern = false;
     bool isWindActive = false;
     Vector2 currentWindForce = Vector2.zero;
-    bool isDead = false;
 
     List<FallingLeaf> activeLeaves = new List<FallingLeaf>();
 
@@ -60,7 +54,7 @@ public class BossMaple : BossBase
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    private void Update()
+    protected override void Update()
     {
         if (isDead) return;
 
@@ -81,12 +75,7 @@ public class BossMaple : BossBase
 
         if (isUsingPattern) return;
 
-        patternTimer += Time.deltaTime;
-        if (patternTimer >= patternInterval)
-        {
-            patternTimer = 0f;
-            StartCoroutine(UseRandomPattern());
-        }
+        UpdatePatternTimer();
     }
 
     private void SpawnLeaf()
@@ -102,10 +91,8 @@ public class BossMaple : BossBase
         activeLeaves.Add(leaf);
     }
 
-    private IEnumerator UseRandomPattern()
+    protected override IEnumerator UseRandomPattern()
     {
-        isUsingPattern = true;
-
         int pattern = Random.Range(0, 3);
         if (pattern == 0)
             yield return StartCoroutine(RootGrowthPattern());
@@ -113,8 +100,6 @@ public class BossMaple : BossBase
             yield return StartCoroutine(AutumnWindPattern());
         else
             yield return StartCoroutine(RootSurgePattern());
-
-        isUsingPattern = false;
     }
 
     private IEnumerator RootGrowthPattern()
@@ -135,7 +120,7 @@ public class BossMaple : BossBase
             groundPositions.Add(groundPos);
 
             Vector2 zoneCenter = groundPos + Vector2.up * (rootHeight / 2f);
-            DangerZoneIndicator zone = Instantiate(dangerZonePrefab, zoneCenter, Quaternion.identity);
+            DangerZoneIndicator zone = SpawnDangerZone(dangerZonePrefab, zoneCenter);
             zone.Setup(new Vector2(rootWidth, rootHeight));
             zone.SetDamage(rootDamage);
             zones.Add(zone);
@@ -158,7 +143,7 @@ public class BossMaple : BossBase
         yield return new WaitForSeconds(0.2f);
 
         foreach (var zone in zones)
-            zone.Remove();
+            RemoveDangerZone(zone);
 
         Debug.Log("[단풍나무] 뿌리 과성장 솟아오름");
 
@@ -218,13 +203,13 @@ public class BossMaple : BossBase
         float rootLength = targetHeight - groundY;
 
         Vector2 zoneCenter = new Vector2(targetPos.x, groundY + rootLength / 2f);
-        DangerZoneIndicator zone = Instantiate(dangerZonePrefab, zoneCenter, Quaternion.identity);
+        DangerZoneIndicator zone = SpawnDangerZone(dangerZonePrefab, zoneCenter);
         zone.Setup(new Vector2(1.5f, rootLength));
         zone.SetDamage(surgeDamage);
 
         yield return new WaitForSeconds(surgeWaitDuration);
 
-        zone.Remove();
+        RemoveDangerZone(zone);
 
         if (surgeRootPrefab != null)
         {
@@ -243,11 +228,6 @@ public class BossMaple : BossBase
     protected override void HandleDeath()
     {
         base.HandleDeath();
-        isDead = true;
-        StopAllCoroutines();
-
-        if (bossCollider != null)
-            bossCollider.enabled = false;
 
         if (spriteRenderer != null && witheredSprite != null)
             spriteRenderer.sprite = witheredSprite;

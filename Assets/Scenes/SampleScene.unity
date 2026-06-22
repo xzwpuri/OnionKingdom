@@ -1439,6 +1439,7 @@ MonoBehaviour:
   contactDamage: 1
   bossCollider: {fileID: 892058164}
   contactCooldown: 0.5
+  patternInterval: 4
   moveJumpForce: 4
   moveJumpHorizontalSpeed: 2
   highJumpDamage: 1
@@ -1453,7 +1454,6 @@ MonoBehaviour:
   digWaitDuration: 0.8
   digRiseDuration: 0.4
   digPostDelay: 0.5
-  patternInterval: 4
   groundCheck: {fileID: 1820231887}
   groundCheckRadius: 0.2
   groundLayer:
@@ -1764,6 +1764,7 @@ MonoBehaviour:
   contactDamage: 1
   bossCollider: {fileID: 966004057}
   contactCooldown: 0.5
+  patternInterval: 4
 --- !u!114 &966004055
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1944,7 +1945,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &967375427
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1961,6 +1962,7 @@ MonoBehaviour:
   contactDamage: 1
   bossCollider: {fileID: 967375429}
   contactCooldown: 0.5
+  patternInterval: 3
   leafPrefab: {fileID: 7277817482732813662, guid: 680d30d61cc218f48b57870fa79a278f, type: 3}
   leafSpawnXRangeRelative: {x: -20, y: 0}
   leafSpawnYRelative: 8
@@ -1989,7 +1991,6 @@ MonoBehaviour:
   surgeHeightAbovePlayer: 4
   surgeRootPrefab: {fileID: 4430495356036547381, guid: b303d26e1a78c0546957c6ee96d32983, type: 3}
   surgeLifeTime: 0.3
-  patternInterval: 3
   dangerZonePrefab: {fileID: 3837764761067119659, guid: fc313c9171ab3504fb8ed7d5ff321c37, type: 3}
   witheredSprite: {fileID: 0}
 --- !u!114 &967375428

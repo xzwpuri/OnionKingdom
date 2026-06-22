@@ -126,26 +126,6 @@ public class DeckManager : MonoBehaviour
         return OpenHotbar();
     }
 
-    // 조합에 사용된 단어를 핫바에서 제거
-    public void RemoveFromHotbar(List<WordData> usedWords)
-    {
-        foreach (var word in usedWords)
-            hotbar.Remove(word);
-    }
-
-    // 사용 횟수 계산
-    public int GetWeaponUses(int wordCount)
-    {
-        return wordCount switch
-        {
-            1 => 10,
-            2 => 7,
-            3 => 5,
-            4 => 3,
-            _ => 1  // 5단어 이상
-        };
-    }
-
 #if UNITY_EDITOR
     public void Debug_AddWord(WordData word)
     {

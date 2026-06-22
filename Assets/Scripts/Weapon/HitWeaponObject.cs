@@ -91,18 +91,13 @@ public class HitWeaponObject : MonoBehaviour
 
     public void HandleTrigger(Collider2D other)
     {
-        Debug.Log($"[Hit] 충돌 대상: {other.gameObject.name}");
         if (other.CompareTag("Player")) return;
 
         Health targetHealth = other.GetComponent<Health>();
         if (targetHealth != null)
         {
-            Debug.Log($"[Hit] Health 찾음, 데미지 적용: {damage}");
-            targetHealth.TakeDamage(Mathf.RoundToInt(damage));
-        }
-        else
-        {
-            Debug.Log("[Hit] Health 컴포넌트 없음");
+            Vector2 dir = ((Vector2)other.transform.position - (Vector2)transform.position).normalized;
+            targetHealth.TakeDamage(Mathf.RoundToInt(damage), dir);
         }
     }
 }
