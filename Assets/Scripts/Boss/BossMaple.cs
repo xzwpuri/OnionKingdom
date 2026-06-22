@@ -97,7 +97,7 @@ public class BossMaple : BossBase
         FallingLeaf leaf = Instantiate(leafPrefab, spawnPos, Quaternion.identity);
 
         if (isWindActive)
-            leaf.ApplyWind(currentWindForce);
+            leaf.ApplyWind(currentWindForce * 0.5f);
 
         activeLeaves.Add(leaf);
     }
@@ -122,11 +122,19 @@ public class BossMaple : BossBase
         Debug.Log("[단풍나무] 뿌리 과성장 시작");
 
         List<DangerZoneIndicator> zones = new List<DangerZoneIndicator>();
+        List<Vector2> groundPositions = new List<Vector2>();
 
         foreach (var relativePos in rootPositions)
         {
-            Vector2 worldPos = (Vector2)transform.position + relativePos;
-            Vector2 zoneCenter = worldPos + Vector2.up * (rootHeight / 2f);
+            float worldX = transform.position.x + relativePos.x;
+
+            RaycastHit2D hit = Physics2D.Raycast(new Vector2(worldX, transform.position.y + 10f), Vector2.down, 30f, groundLayer);
+            float groundY = hit.collider != null ? hit.point.y : transform.position.y;
+
+            Vector2 groundPos = new Vector2(worldX, groundY);
+            groundPositions.Add(groundPos);
+
+            Vector2 zoneCenter = groundPos + Vector2.up * (rootHeight / 2f);
             DangerZoneIndicator zone = Instantiate(dangerZonePrefab, zoneCenter, Quaternion.identity);
             zone.Setup(new Vector2(rootWidth, rootHeight));
             zone.SetDamage(rootDamage);
@@ -135,15 +143,14 @@ public class BossMaple : BossBase
 
         yield return new WaitForSeconds(rootPreDelay);
 
-        foreach (var relativePos in rootPositions)
+        foreach (var groundPos in groundPositions)
         {
-            Vector2 worldPos = (Vector2)transform.position + relativePos;
             if (rootPrefab != null)
             {
-                GameObject root = Instantiate(rootPrefab, worldPos, Quaternion.identity);
-                Vector3 scale = root.transform.localScale;
-                scale.y = rootHeight;
-                root.transform.localScale = scale;
+                GameObject root = Instantiate(rootPrefab, groundPos, Quaternion.identity);
+                RootObject rootObj = root.GetComponent<RootObject>();
+                if (rootObj != null)
+                    rootObj.SetTargetHeight(rootHeight);
                 Destroy(root, rootLifeTime);
             }
         }
@@ -171,7 +178,7 @@ public class BossMaple : BossBase
         foreach (var leaf in activeLeaves)
         {
             if (leaf != null)
-                leaf.ApplyWind(currentWindForce);
+                leaf.ApplyWind(currentWindForce * 0.5f);
         }
 
         yield return new WaitForSeconds(windDuration);
@@ -222,9 +229,9 @@ public class BossMaple : BossBase
         if (surgeRootPrefab != null)
         {
             GameObject root = Instantiate(surgeRootPrefab, new Vector2(targetPos.x, groundY), Quaternion.identity);
-            Vector3 scale = root.transform.localScale;
-            scale.y = rootLength;
-            root.transform.localScale = scale;
+            RootObject rootObj = root.GetComponent<RootObject>();
+            if (rootObj != null)
+                rootObj.SetTargetHeight(rootLength);
             Destroy(root, surgeLifeTime);
         }
 

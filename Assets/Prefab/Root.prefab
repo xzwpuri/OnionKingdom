@@ -152,4 +152,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RootObject
   damage: 1
-  lifeTime: 1

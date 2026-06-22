@@ -35,6 +35,8 @@ public class ThrowProjectile : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        Debug.Log($"[Throw] 충돌 대상: {other.gameObject.name}, 태그: {other.tag}");
+
         if (other.CompareTag("Player")) return;
         if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
@@ -44,7 +46,14 @@ public class ThrowProjectile : MonoBehaviour
 
         Health targetHealth = other.GetComponent<Health>();
         if (targetHealth != null)
+        {
+            Debug.Log($"[Throw] Health 발견, 데미지 적용: {damage}");
             targetHealth.TakeDamage(Mathf.RoundToInt(damage));
+        }
+        else
+        {
+            Debug.Log("[Throw] Health 컴포넌트 없음!");
+        }
 
         Destroy(gameObject);
     }

@@ -18,14 +18,13 @@ public class PlayerKnockback : MonoBehaviour
         float horizontalForce = damage * knockbackPerDamage;
         float verticalForce = damage * upwardBoostPerDamage;
 
-        Vector2 finalDirection = hitDirection.normalized;
-        finalDirection.y = Mathf.Max(finalDirection.y, 0f);
+        // 방향에서 좌우 신호만 추출 (크기 무시, 부호만 사용)
+        float horizontalSign = hitDirection.x >= 0 ? 1f : -1f;
 
-        Vector2 finalForce = new Vector2(finalDirection.x * horizontalForce, verticalForce);
+        Vector2 finalForce = new Vector2(horizontalSign * horizontalForce, verticalForce);
 
         playerController.ApplyKnockback(finalForce, knockbackDuration);
 
-        // 넉백 지속시간 동안 무적
         health.SetInvincible(true);
         StartCoroutine(EndInvincibility(knockbackDuration));
     }

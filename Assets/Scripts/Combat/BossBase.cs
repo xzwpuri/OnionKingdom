@@ -27,7 +27,13 @@ public class BossBase : MonoBehaviour
         Health playerHealth = other.GetComponent<Health>();
         if (playerHealth != null)
         {
-            Vector2 hitDir = (other.transform.position - transform.position).normalized;
+            Vector2 diff = (Vector2)other.transform.position - (Vector2)transform.position;
+
+            // 수평 방향이 거의 없으면 랜덤하게 좌우 중 하나로 강제
+            if (Mathf.Abs(diff.x) < 0.1f)
+                diff.x = Random.value > 0.5f ? 1f : -1f;
+
+            Vector2 hitDir = diff.normalized;
             playerHealth.TakeDamage(contactDamage, hitDir);
         }
     }
