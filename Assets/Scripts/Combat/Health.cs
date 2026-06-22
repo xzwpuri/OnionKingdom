@@ -19,10 +19,10 @@ public class Health : MonoBehaviour
         currentHP = maxHP;
     }
 
-    public void TakeDamage(int amount, Vector2 hitDirection = default)
+    public void TakeDamage(int amount, Vector2 hitDirection = default, bool ignoreInvincible = false)
     {
         if (currentHP <= 0) return;
-        if (isInvincible) return;
+        if (isInvincible && !ignoreInvincible) return;
 
         currentHP -= amount;
         currentHP = Mathf.Max(currentHP, 0);

@@ -87,6 +87,11 @@ public class PlayerController : MonoBehaviour
         rb.AddForce(force, ForceMode2D.Impulse);
     }
 
+    public void ApplyPush(Vector2 force)
+    {
+        rb.AddForce(force, ForceMode2D.Impulse);
+    }
+
     public void ApplyExternalForce(Vector2 force)
     {
         externalForce = force;
