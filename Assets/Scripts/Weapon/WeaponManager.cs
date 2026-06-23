@@ -5,6 +5,7 @@ public class WeaponManager : MonoBehaviour
 {
     [SerializeField] HitWeaponObject hitWeaponPrefab;
     [SerializeField] ThrowProjectile throwProjectilePrefab;
+    [SerializeField] ShootProjectile shootProjectilePrefab;
     [SerializeField] EquippedWeaponDisplay weaponDisplay;
 
     public static WeaponManager Instance { get; private set; }
@@ -110,6 +111,9 @@ public class WeaponManager : MonoBehaviour
                 break;
             case VerbType.Throw:
                 WeaponLibrary.Throw(this, player, currentWeapon, targetPos, throwProjectilePrefab);
+                break;
+            case VerbType.Shoot:
+                WeaponLibrary.Shoot(this, player, currentWeapon, targetPos, shootProjectilePrefab);
                 break;
         }
 

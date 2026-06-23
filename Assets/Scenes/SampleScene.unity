@@ -2358,6 +2358,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WeaponManager
   hitWeaponPrefab: {fileID: 4792954471213402543, guid: cbed3914c136c264b8e29dc8474dc824, type: 3}
   throwProjectilePrefab: {fileID: 4691148630404515284, guid: 6007655263ba6984a807cf92e38ec7a8, type: 3}
+  shootProjectilePrefab: {fileID: 836608958769055517, guid: fd0d7eb4160954099ba5b85fb44b5402, type: 3}
   weaponDisplay: {fileID: 90355772}
 --- !u!4 &1706622851
 Transform:
