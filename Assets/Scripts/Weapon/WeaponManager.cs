@@ -13,6 +13,7 @@ public class WeaponManager : MonoBehaviour
     WeaponData currentWeapon;
     Coroutine activeRoutine;
     Transform player;
+    PlayerController playerController;
 
     public WeaponData CurrentWeapon => currentWeapon;
 
@@ -39,7 +40,10 @@ public class WeaponManager : MonoBehaviour
     {
         GameObject playerObj = GameObject.FindWithTag("Player");
         if (playerObj != null)
+        {
             player = playerObj.transform;
+            playerController = playerObj.GetComponent<PlayerController>();
+        }
     }
 
     private void Update()
@@ -103,6 +107,8 @@ public class WeaponManager : MonoBehaviour
 
         if (weaponDisplay != null)
             weaponDisplay.gameObject.SetActive(false);
+
+        playerController?.TriggerAttack();
 
         switch (currentWeapon.verb)
         {

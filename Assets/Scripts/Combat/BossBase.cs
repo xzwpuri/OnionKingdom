@@ -9,6 +9,7 @@ public class BossBase : MonoBehaviour
     [SerializeField] protected Collider2D bossCollider;
     [SerializeField] protected float contactCooldown = 0.5f;
     [SerializeField] protected float patternInterval = 4f;
+    [SerializeField] protected Animator animator;
 
     protected Transform player;
     protected bool isDead = false;
@@ -16,13 +17,18 @@ public class BossBase : MonoBehaviour
     protected float patternTimer = 0f;
 
     float lastContactTime = -999f;
+    float lastHurtAnimTime = -999f;
+    const float hurtAnimCooldown = 0.5f;
     protected List<DangerZoneIndicator> activeDangerZones = new List<DangerZoneIndicator>();
 
     protected virtual void Awake()
     {
         player = GameObject.FindWithTag("Player")?.transform;
         if (health != null)
+        {
             health.OnDeath += HandleDeath;
+            health.OnDamageTaken += (_, __) => OnHurt();
+        }
     }
 
     protected virtual void Update()
@@ -99,14 +105,33 @@ public class BossBase : MonoBehaviour
         }
     }
 
+    void OnHurt()
+    {
+        if (isDead) return;
+        if (Time.time - lastHurtAnimTime < hurtAnimCooldown) return;
+        lastHurtAnimTime = Time.time;
+        PlayTrigger(AnimParam.Hurt);
+    }
+
     protected virtual void HandleDeath()
     {
         Debug.Log($"{gameObject.name} 처치됨");
         isDead = true;
         StopAllCoroutines();
         ClearAllDangerZones();
+        PlayTrigger(AnimParam.Death);
 
         if (bossCollider != null)
             bossCollider.enabled = false;
+    }
+
+    protected void SetBool(string param, bool value)
+    {
+        if (animator != null) animator.SetBool(param, value);
+    }
+
+    protected void PlayTrigger(string param)
+    {
+        if (animator != null) animator.SetTrigger(param);
     }
 }

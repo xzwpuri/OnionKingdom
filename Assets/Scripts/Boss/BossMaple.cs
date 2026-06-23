@@ -105,6 +105,7 @@ public class BossMaple : BossBase
     private IEnumerator RootGrowthPattern()
     {
         Debug.Log("[단풍나무] 뿌리 과성장 시작");
+        PlayTrigger(AnimParam.MapleRootGrowth);
 
         List<DangerZoneIndicator> zones = new List<DangerZoneIndicator>();
         List<Vector2> groundPositions = new List<Vector2>();
@@ -153,6 +154,7 @@ public class BossMaple : BossBase
     private IEnumerator AutumnWindPattern()
     {
         Debug.Log("[단풍나무] 가을 바람 시작");
+        PlayTrigger(AnimParam.MapleAutumnWind);
 
         if (player == null) yield break;
 
@@ -183,6 +185,7 @@ public class BossMaple : BossBase
     private IEnumerator RootSurgePattern()
     {
         Debug.Log("[단풍나무] 뿌리 급성장 시작");
+        PlayTrigger(AnimParam.MapleRootSurge);
 
         if (player == null) yield break;
 

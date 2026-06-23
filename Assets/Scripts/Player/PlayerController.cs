@@ -1,4 +1,5 @@
 using UnityEngine;
+
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
@@ -13,51 +14,71 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform groundCheck;
     [SerializeField] float groundCheckRadius = 0.1f;
     [SerializeField] LayerMask groundLayer;
+    [Header("Animation")]
+    [SerializeField] Animator animator;
 
     Rigidbody2D rb;
     int jumpCount;
     bool isGrounded;
-    bool isKnockedBack = false;
-    Vector2 externalForce = Vector2.zero;
+    bool isKnockedBack;
+    bool isDead;
+    Vector2 externalForce;
+
+    float lastHurtAnimTime = -999f;
+    const float hurtAnimCooldown = 0.5f;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
     }
+
+    void Start()
+    {
+        Health health = GetComponent<Health>();
+        if (health != null)
+        {
+            health.OnDamageTaken += (_, __) => OnHurt();
+            health.OnDeath += OnDeath;
+        }
+    }
+
     void Update()
     {
+        if (isDead) return;
         CheckGround();
-
-        if (!isKnockedBack)
-            Move();
-
+        if (!isKnockedBack) Move();
         Jump();
         UpdateGravity();
     }
+
     void CheckGround()
     {
         bool wasGrounded = isGrounded;
-        Collider2D hit = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
-        isGrounded = hit != null;
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer) != null;
+        SetBool(AnimParam.IsGrounded, isGrounded);
         if (!wasGrounded && isGrounded)
         {
             jumpCount = 0;
-            if (isKnockedBack)
-                isKnockedBack = false;
+            if (isKnockedBack) isKnockedBack = false;
         }
     }
+
     void Move()
     {
         float input = Input.GetAxisRaw("Horizontal");
         float finalX = input * moveSpeed + externalForce.x;
         rb.linearVelocity = new Vector2(finalX, rb.linearVelocity.y);
+
+        // transform.localScale로 좌우 반전 (자식 오브젝트 포함 일괄 반전)
         if (input > 0) transform.localScale = new Vector3(1, 1, 1);
         else if (input < 0) transform.localScale = new Vector3(-1, 1, 1);
+
+        SetBool(AnimParam.IsMoving, input != 0f);
     }
+
     void Jump()
     {
         if (isKnockedBack) return;
-
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (isGrounded)
@@ -72,12 +93,33 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
     void UpdateGravity()
     {
-        if (rb.linearVelocity.y < 0)
-            rb.gravityScale = fallGravityScale;
-        else
-            rb.gravityScale = riseGravityScale;
+        rb.gravityScale = rb.linearVelocity.y < 0 ? fallGravityScale : riseGravityScale;
+    }
+
+    void OnHurt()
+    {
+        if (isDead) return;
+        if (Time.time - lastHurtAnimTime < hurtAnimCooldown) return;
+        lastHurtAnimTime = Time.time;
+        PlayTrigger(AnimParam.Hurt);
+    }
+
+    void OnDeath()
+    {
+        isDead = true;
+        rb.linearVelocity = Vector2.zero;
+        rb.gravityScale = 0f;
+        PlayTrigger(AnimParam.Death);
+        // TODO: 게임오버 처리 / 리스폰 로직
+    }
+
+    public void TriggerAttack()
+    {
+        if (isDead) return;
+        PlayTrigger(AnimParam.Attack);
     }
 
     public void ApplyKnockback(Vector2 force, float duration)
@@ -87,14 +129,17 @@ public class PlayerController : MonoBehaviour
         rb.AddForce(force, ForceMode2D.Impulse);
     }
 
-    public void ApplyExternalForce(Vector2 force)
+    public void ApplyExternalForce(Vector2 force) => externalForce = force;
+    public void ClearExternalForce() => externalForce = Vector2.zero;
+
+    void SetBool(string param, bool value)
     {
-        externalForce = force;
+        if (animator != null) animator.SetBool(param, value);
     }
 
-    public void ClearExternalForce()
+    void PlayTrigger(string param)
     {
-        externalForce = Vector2.zero;
+        if (animator != null) animator.SetTrigger(param);
     }
 
     void OnDrawGizmosSelected()

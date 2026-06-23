@@ -76,6 +76,7 @@ public class BossCarrot : BossBase
     private IEnumerator MoveJump()
     {
         isGrounded = false;
+        SetBool(AnimParam.IsMoving, true);
 
         if (player == null) yield break;
         float dir = player.position.x > transform.position.x ? 1f : -1f;
@@ -91,6 +92,7 @@ public class BossCarrot : BossBase
 
         isGrounded = true;
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
+        SetBool(AnimParam.IsMoving, false);
     }
 
     protected override IEnumerator UseRandomPattern()
@@ -105,6 +107,7 @@ public class BossCarrot : BossBase
     private IEnumerator HighJumpPattern()
     {
         Debug.Log("[당근] 높은 점프 시작");
+        PlayTrigger(AnimParam.CarrotHighJump);
 
         rb.gravityScale = 0f;
         rb.linearVelocity = Vector2.zero;
@@ -151,6 +154,7 @@ public class BossCarrot : BossBase
     private IEnumerator DigPattern()
     {
         Debug.Log("[당근] 땅 파기 시작");
+        PlayTrigger(AnimParam.CarrotDig);
 
         if (bossCollider != null) bossCollider.enabled = false;
 
