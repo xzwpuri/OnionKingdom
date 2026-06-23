@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d72dbd805863bf74a9ad1e4233be649b, type: 3}
-  m_Name: burn
+  m_Name: explosive
   m_EditorClassIdentifier: Assembly-CSharp::WordData
-  word: burn
+  word: explosive
   type: 2
   verbType: 0
   canBeUsedAlone: 0
@@ -22,6 +22,6 @@ MonoBehaviour:
   particleEffectPrefab: {fileID: 0}
   outlineColor: {r: 1, g: 1, b: 1, a: 1}
   adjectiveDamageBonus: 0
-  debuffType: 1
-  debuffValue: 1
-  debuffDuration: 3
+  debuffType: 2
+  debuffValue: 10
+  debuffDuration: 2

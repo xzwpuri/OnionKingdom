@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public static class WeaponLibrary
 {
@@ -9,18 +10,20 @@ public static class WeaponLibrary
         float damage = 10f;
         Sprite sprite = null;
         Vector2 sizeMultiplier = Vector2.one;
+        List<WordData> adjectives = null;
         if (weapon.nounEntries.Count > 0)
         {
             NounEntry entry = weapon.nounEntries[0];
             damage += entry.noun.damageModifier;
             sprite = entry.noun.worldSprite;
             sizeMultiplier = entry.noun.sizeModifier;
+            adjectives = entry.appliedAdjectives;
             foreach (var adj in entry.appliedAdjectives)
                 damage += adj.adjectiveDamageBonus;
         }
         float offsetDistance = 1.2f;
         HitWeaponObject hitObj = Object.Instantiate(hitPrefab, player.position, Quaternion.identity);
-        hitObj.Setup(sprite, damage, direction, player, offsetDistance, sizeMultiplier);
+        hitObj.Setup(sprite, damage, direction, player, offsetDistance, sizeMultiplier, adjectives);
     }
 
     public static void Throw(MonoBehaviour caster, Transform player, WeaponData weapon, Vector2 targetPos, ThrowProjectile throwPrefab)
@@ -39,7 +42,7 @@ public static class WeaponLibrary
             foreach (var adj in entry.appliedAdjectives)
                 damage += adj.adjectiveDamageBonus;
             ThrowProjectile proj = Object.Instantiate(throwPrefab, player.position, Quaternion.identity);
-            proj.Setup(entry.noun.worldSprite, damage, direction, speed, sizeMultiplier);
+            proj.Setup(entry.noun.worldSprite, damage, direction, speed, sizeMultiplier, entry.appliedAdjectives);
             yield return new WaitForSeconds(0.3f);
         }
     }
@@ -60,7 +63,7 @@ public static class WeaponLibrary
             foreach (var adj in entry.appliedAdjectives)
                 damage += adj.adjectiveDamageBonus;
             ShootProjectile proj = Object.Instantiate(shootPrefab, player.position, Quaternion.identity);
-            proj.Setup(entry.noun.worldSprite, damage, direction, speed, sizeMultiplier);
+            proj.Setup(entry.noun.worldSprite, damage, direction, speed, sizeMultiplier, entry.appliedAdjectives);
             yield return new WaitForSeconds(0.15f);
         }
     }

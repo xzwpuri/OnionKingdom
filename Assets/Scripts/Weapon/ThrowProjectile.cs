@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class ThrowProjectile : MonoBehaviour
 {
@@ -9,14 +10,16 @@ public class ThrowProjectile : MonoBehaviour
     Vector2 velocity;
     float gravity = 9.8f;
     float lifeTime = 3f;
+    List<WordData> adjectives;
 
-    public void Setup(Sprite sprite, float dmg, Vector2 direction, float speed, Vector2 sizeMultiplier)
+    public void Setup(Sprite sprite, float dmg, Vector2 direction, float speed, Vector2 sizeMultiplier, List<WordData> adjectives = null)
     {
         if (sprite != null)
             spriteRenderer.sprite = sprite;
 
         damage = dmg;
         velocity = direction * speed;
+        this.adjectives = adjectives;
         transform.localScale = new Vector3(sizeMultiplier.x, sizeMultiplier.y, 1f);
 
         Destroy(gameObject, lifeTime);
@@ -47,6 +50,7 @@ public class ThrowProjectile : MonoBehaviour
         {
             Vector2 dir = ((Vector2)other.transform.position - (Vector2)transform.position).normalized;
             targetHealth.TakeDamage(Mathf.RoundToInt(damage), dir);
+            AdjEffectApplier.Apply(adjectives, targetHealth, transform.position);
         }
 
         Destroy(gameObject);

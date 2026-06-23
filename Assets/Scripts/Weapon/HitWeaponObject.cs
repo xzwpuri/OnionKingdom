@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class HitWeaponObject : MonoBehaviour
 {
@@ -12,10 +13,12 @@ public class HitWeaponObject : MonoBehaviour
     [SerializeField] float activeDuration = 0.2f;
 
     float damage;
+    List<WordData> adjectives;
 
-    public void Setup(Sprite nounSprite, float dmg, Vector2 direction, Transform player, float offsetDistance, Vector2 sizeMultiplier)
+    public void Setup(Sprite nounSprite, float dmg, Vector2 direction, Transform player, float offsetDistance, Vector2 sizeMultiplier, List<WordData> adjectives = null)
     {
         damage = dmg;
+        this.adjectives = adjectives;
 
         transform.position = (Vector2)player.position + direction * offsetDistance;
 
@@ -98,6 +101,7 @@ public class HitWeaponObject : MonoBehaviour
         {
             Vector2 dir = ((Vector2)other.transform.position - (Vector2)transform.position).normalized;
             targetHealth.TakeDamage(Mathf.RoundToInt(damage), dir);
+            AdjEffectApplier.Apply(adjectives, targetHealth, transform.position);
         }
     }
 }
