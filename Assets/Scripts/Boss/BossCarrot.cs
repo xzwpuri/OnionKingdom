@@ -48,6 +48,7 @@ public class BossCarrot : BossBase
 
     protected override void Update()
     {
+        if (!isActivated) return;
         if (isDead) return;
         if (isUsingPattern) return;
 

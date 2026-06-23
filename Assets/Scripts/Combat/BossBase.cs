@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class BossBase : MonoBehaviour
 {
+    public event System.Action OnDefeated;
+
     [SerializeField] protected Health health;
     [SerializeField] protected int contactDamage = 1;
     [SerializeField] protected Collider2D bossCollider;
@@ -13,8 +15,11 @@ public class BossBase : MonoBehaviour
 
     protected Transform player;
     protected bool isDead = false;
+    protected bool isActivated = false;
     protected bool isUsingPattern = false;
     protected float patternTimer = 0f;
+
+    public void Activate() => isActivated = true;
 
     float lastContactTime = -999f;
     float lastHurtAnimTime = -999f;
@@ -33,6 +38,7 @@ public class BossBase : MonoBehaviour
 
     protected virtual void Update()
     {
+        if (!isActivated) return;
         if (isDead) return;
         if (isUsingPattern) return;
 
@@ -123,6 +129,8 @@ public class BossBase : MonoBehaviour
 
         if (bossCollider != null)
             bossCollider.enabled = false;
+
+        OnDefeated?.Invoke();
     }
 
     protected void SetBool(string param, bool value)
