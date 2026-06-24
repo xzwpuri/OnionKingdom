@@ -24,11 +24,13 @@ public class CombatCameraController : MonoBehaviour
     CinemachineConfiner2D _confiner;
     Transform _player;
     bool _inCombat;
+    float _currentOrthoSize;
 
     void Awake()
     {
         _confiner = combatCam.GetComponent<CinemachineConfiner2D>();
         _player = GameObject.FindWithTag("Player")?.transform;
+        _currentOrthoSize = baseCombatOrthoSize;
 
         combatCam.Priority = explorationPriority - 5;
     }
@@ -58,14 +60,16 @@ public class CombatCameraController : MonoBehaviour
             _confiner.InvalidateBoundingShapeCache();
         }
 
-        float arenaY = bounds != null
-            ? bounds.bounds.center.y
-            : (_player != null ? _player.position.y : 0f);
+        // 카메라 Y를 아레나 기하학적 중심이 아닌 플레이어의 현재 Y(지면)로 고정.
+        // 이렇게 해야 점프할수록 distFromProxyY가 증가해 OrthoSize가 커진다.
+        float arenaY = _player != null ? _player.position.y
+                       : (bounds != null ? bounds.bounds.center.y : 0f);
 
         followProxy.Activate(_player, arenaY);
 
+        _currentOrthoSize = baseCombatOrthoSize;
         var lens = combatCam.Lens;
-        lens.OrthographicSize = baseCombatOrthoSize;
+        lens.OrthographicSize = _currentOrthoSize;
         combatCam.Lens = lens;
 
         // 우선순위 올리면 CinemachineBrain이 DefaultBlend 설정에 따라 자동 블렌딩
@@ -96,12 +100,10 @@ public class CombatCameraController : MonoBehaviour
             maxCombatOrthoSize
         );
 
+        _currentOrthoSize = Mathf.Lerp(_currentOrthoSize, targetSize, Time.deltaTime * orthoSizeLerpSpeed);
+
         var lens = combatCam.Lens;
-        lens.OrthographicSize = Mathf.Lerp(
-            lens.OrthographicSize,
-            targetSize,
-            Time.deltaTime * orthoSizeLerpSpeed
-        );
+        lens.OrthographicSize = _currentOrthoSize;
         combatCam.Lens = lens;
     }
 }
