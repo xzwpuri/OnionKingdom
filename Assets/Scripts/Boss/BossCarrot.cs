@@ -44,6 +44,21 @@ public class BossCarrot : BossBase
         spriteRenderer = GetComponent<SpriteRenderer>();
         bossSize = spriteRenderer != null ? spriteRenderer.bounds.size : Vector2.one;
         originalGravityScale = rb.gravityScale;
+
+        AddGroundPhysicsCollider();
+    }
+
+    // bossCollider는 trigger(접촉 데미지용)라 바닥을 통과함.
+    // Ground 레이어하고만 충돌하는 non-trigger 콜라이더를 런타임에 추가.
+    void AddGroundPhysicsCollider()
+    {
+        if (!(bossCollider is BoxCollider2D triggerBox)) return;
+
+        var physCol = gameObject.AddComponent<BoxCollider2D>();
+        physCol.isTrigger = false;
+        physCol.size = triggerBox.size;
+        physCol.offset = triggerBox.offset;
+        physCol.includeLayers = LayerMask.GetMask("Ground");
     }
 
     protected override void Update()

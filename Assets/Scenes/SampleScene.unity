@@ -153,6 +153,7 @@ MonoBehaviour:
   walls:
   - {fileID: 1397834525}
   - {fileID: 530397421}
+  cameraBounds: {fileID: 41291077}
 --- !u!4 &41291076
 Transform:
   m_ObjectHideFlags: 0
@@ -214,7 +215,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 43, y: 10}
+  m_Size: {x: 43, y: 30}
   m_EdgeRadius: 0
 --- !u!1 &90355769
 GameObject:
@@ -1594,7 +1595,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 44, y: -1, z: 0}
-  m_LocalScale: {x: 1.5, y: 3.5, z: 1}
+  m_LocalScale: {x: 2, y: 5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1820231887}
@@ -1618,7 +1619,7 @@ MonoBehaviour:
   contactCooldown: 0.5
   patternInterval: 4
   animator: {fileID: 892058175}
-  moveJumpForce: 4
+  moveJumpForce: 6
   moveJumpHorizontalSpeed: 2
   highJumpDamage: 1
   highJumpForce: 15
