@@ -131,6 +131,9 @@ public class BossBase : MonoBehaviour
             bossCollider.enabled = false;
 
         OnDefeated?.Invoke();
+
+        Health playerHealth = player?.GetComponent<Health>();
+        playerHealth?.Heal(playerHealth.MaxHP);
     }
 
     protected void SetBool(string param, bool value)

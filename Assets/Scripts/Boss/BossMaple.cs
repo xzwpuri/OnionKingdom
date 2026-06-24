@@ -56,6 +56,7 @@ public class BossMaple : BossBase
 
     protected override void Update()
     {
+        if (!isActivated) return;
         if (isDead) return;
 
         leafTimer += Time.deltaTime;
@@ -231,6 +232,9 @@ public class BossMaple : BossBase
     protected override void HandleDeath()
     {
         base.HandleDeath();
+
+        isWindActive = false;
+        player?.GetComponent<PlayerController>()?.ClearExternalForce();
 
         if (spriteRenderer != null && witheredSprite != null)
             spriteRenderer.sprite = witheredSprite;

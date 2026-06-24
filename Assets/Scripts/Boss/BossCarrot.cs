@@ -220,5 +220,24 @@ public class BossCarrot : BossBase
             rb.linearVelocity = Vector2.zero;
             rb.gravityScale = 0f;
         }
+
+        StartCoroutine(SinkAndDestroy());
+    }
+
+    IEnumerator SinkAndDestroy()
+    {
+        float duration = 1.2f;
+        float elapsed = 0f;
+        Vector3 startPos = transform.position;
+        Vector3 endPos = startPos + Vector3.down * 4f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            transform.position = Vector3.Lerp(startPos, endPos, elapsed / duration);
+            yield return null;
+        }
+
+        Destroy(gameObject);
     }
 }
