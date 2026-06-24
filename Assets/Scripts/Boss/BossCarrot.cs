@@ -172,7 +172,7 @@ public class BossCarrot : BossBase
         Debug.Log("[당근] 땅 파기 시작");
         PlayTrigger(AnimParam.CarrotDig);
 
-        if (bossCollider != null) bossCollider.enabled = false;
+        SetBossColliderEnabled(false);
 
         rb.gravityScale = 0f;
         rb.linearVelocity = Vector2.zero;
@@ -218,7 +218,7 @@ public class BossCarrot : BossBase
             yield return null;
         }
 
-        if (bossCollider != null) bossCollider.enabled = true;
+        SetBossColliderEnabled(true);
         rb.gravityScale = originalGravityScale;
 
         Debug.Log("[당근] 땅 파기 솟아오름");

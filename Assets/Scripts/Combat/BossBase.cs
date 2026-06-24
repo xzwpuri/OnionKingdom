@@ -19,6 +19,8 @@ public class BossBase : MonoBehaviour
     protected bool isUsingPattern = false;
     protected float patternTimer = 0f;
 
+    Collider2D _playerBlockCol;
+
     public void Activate() => isActivated = true;
 
     float lastContactTime = -999f;
@@ -34,6 +36,24 @@ public class BossBase : MonoBehaviour
             health.OnDeath += HandleDeath;
             health.OnDamageTaken += (_, __) => OnHurt();
         }
+        AddPlayerBlockCollider();
+    }
+
+    void AddPlayerBlockCollider()
+    {
+        if (!(bossCollider is BoxCollider2D triggerBox)) return;
+        var col = gameObject.AddComponent<BoxCollider2D>();
+        col.isTrigger = false;
+        col.size = triggerBox.size;
+        col.offset = triggerBox.offset;
+        col.includeLayers = LayerMask.GetMask("Player");
+        _playerBlockCol = col;
+    }
+
+    protected void SetBossColliderEnabled(bool active)
+    {
+        if (bossCollider != null) bossCollider.enabled = active;
+        if (_playerBlockCol != null) _playerBlockCol.enabled = active;
     }
 
     protected virtual void Update()
@@ -127,8 +147,7 @@ public class BossBase : MonoBehaviour
         ClearAllDangerZones();
         PlayTrigger(AnimParam.Death);
 
-        if (bossCollider != null)
-            bossCollider.enabled = false;
+        SetBossColliderEnabled(false);
 
         OnDefeated?.Invoke();
 
