@@ -3160,7 +3160,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 41291076}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!70 &99100003
+--- !u!60 &99100003
 PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3487,7 +3487,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 99200002}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!70 &99200013
+--- !u!60 &99200013
 PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
